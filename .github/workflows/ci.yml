@@ -16,7 +16,7 @@ jobs:
       - name: Build image
         run: docker build . --file Dockerfile
   release:
-    if: github.event_name == 'release' && github.event.action == 'published'
+    if: github.event_name == 'push' || (github.event_name == 'release' && github.event.action == 'published')
     needs: test
     runs-on: ubuntu-latest
     steps:
