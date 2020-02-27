@@ -11,4 +11,4 @@ update_configs:
     update_schedule: "daily"
     automerged_updates:
       - match:
-          update_type: "semver:patch"
+          update_type: "all"
