@@ -10,7 +10,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+var version = "0.0.1"
+
 func main() {
+	log.Printf("Starting gke-exporter (Version: %s)", version)
+
 	gkeExporter := exporter.New()
 
 	prometheus.MustRegister(gkeExporter)
