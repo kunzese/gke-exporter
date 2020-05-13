@@ -1,0 +1,60 @@
+name: Release
+on:
+  push:
+    paths-ignore:
+      - .dependabot/**
+      - .github/**
+      - .yamllint
+      - '*.md'
+    branches:
+      - master
+    tags:
+      - v*
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Lint Markdown files
+        uses: actionshub/markdownlint@v1.1.1
+
+      - name: Lint YAML files
+        uses: karancode/yamllint-github-action@v2.0.0
+        with:
+          yamllint_comment: true
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log into registry
+        run: |-
+          DOCKERHUB_USERNAME=$(echo $GITHUB_REPOSITORY | awk -F"/" '{print $1}')
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+
+      - name: Build and push image
+        run: |-
+          set -ex
+
+          IMAGE_ID=$GITHUB_REPOSITORY
+          IMAGE_TAG=latest
+          VERSION=$GITHUB_SHA
+
+          # Strip "v" prefix from tag name
+          if [[ "$GITHUB_REF" == "refs/tags/v"* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+            IMAGE_TAG=$VERSION
+          fi
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo IMAGE_TAG=$IMAGE_TAG
+          echo VERSION=$VERSION
+
+          docker build \
+            --tag $IMAGE_ID:$IMAGE_TAG \
+            --build-arg VERSION=$VERSION
+            -f Dockerfile \
+            .
+
+          docker push $IMAGE_ID:$IMAGE_TAG
