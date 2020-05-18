@@ -6,15 +6,24 @@ update_configs:
     automerged_updates:
       - match:
           update_type: all
+    commit_message:
+      prefix: build
+      include_scope: true
   - package_manager: docker
     directory: /
     update_schedule: daily
     automerged_updates:
       - match:
           update_type: all
+    commit_message:
+      prefix: build
+      include_scope: true
   - package_manager: github_actions
     directory: /
     update_schedule: daily
     automerged_updates:
       - match:
           update_type: all
+    commit_message:
+      prefix: build
+      include_scope: true
