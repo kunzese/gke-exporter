@@ -19,7 +19,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Lint Markdown files
-        uses: actionshub/markdownlint@v1.1.1
+        uses: actionshub/markdownlint@1.2.2
 
       - name: Lint YAML files
         uses: karancode/yamllint-github-action@v2.0.0
