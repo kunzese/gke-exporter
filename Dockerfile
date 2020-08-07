@@ -1,4 +1,4 @@
-FROM golang:1.14.6-alpine as builder
+FROM golang:1.14.7-alpine as builder
 ARG VERSION
 RUN apk add --no-cache git
 WORKDIR /go/src/github.com/kunzese/gke-exporter
