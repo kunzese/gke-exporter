@@ -1,14 +1,49 @@
 # gke-exporter
 
-![CI](https://github.com/kunzese/gke-exporter/workflows/CI/badge.svg)
-![Release](https://github.com/kunzese/gke-exporter/workflows/Release/badge.svg)
-
-## Docker Hub
-
 <https://hub.docker.com/r/kunzese/gke-exporter>
 
+![CI](https://github.com/kunzese/gke-exporter/workflows/CI/badge.svg)
+![Release](https://github.com/kunzese/gke-exporter/workflows/Release/badge.svg)
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/kunzese/gke-exporter?sort=semver)
 ![Docker Pulls](https://img.shields.io/docker/pulls/kunzese/gke-exporter)
+
+## Description
+
+This exporter provides two metrics, `gke_master_version_count` and `gke_master_unsupported_versions_count`.
+
+### gke_master_version_count
+
+Number of GKE clusters, partitioned by the version of their master node.
+
+```text
+# HELP gke_master_version_count Number of GKE clusters, partitioned by the version of their master node.
+# TYPE gke_master_version_count counter
+gke_master_version_count{version="1.14.10-gke.42"} 1
+gke_master_version_count{version="1.14.10-gke.46"} 2
+gke_master_version_count{version="1.14.10-gke.50"} 10
+gke_master_version_count{version="1.15.12-gke.2"} 5
+gke_master_version_count{version="1.15.12-gke.20"} 1
+gke_master_version_count{version="1.16.11-gke.5"} 1
+gke_master_version_count{version="1.16.13-gke.1"} 10
+gke_master_version_count{version="1.16.13-gke.401"} 100
+gke_master_version_count{version="1.16.15-gke.500"} 78
+gke_master_version_count{version="1.17.9-gke.1500"} 23
+gke_master_version_count{version="1.17.9-gke.1504"} 9
+```
+
+### gke_master_unsupported_versions_count
+
+Number of GKE clusters with unsupported master versions, partitioned by the location, project and version of their master node.
+
+```text
+# HELP gke_master_unsupported_versions_count Number of GKE clusters with unsupported master versions, partitioned by the location, project and version of their master node.
+# TYPE gke_master_unsupported_versions_count counter
+gke_master_unsupported_versions_count{location="europe-west4",name="cluster1",project_id="demo-project-1",project_name="Demo Project 1",version="1.16.11-gke.5"} 1
+gke_master_unsupported_versions_count{location="europe-west4",name="cluster2",project_id="demo-project-2",project_name="Demo Project 2",version="1.16.11-gke.5"} 1
+gke_master_unsupported_versions_count{location="europe-west4",name="cluster3",project_id="demo-project-3",project_name="Demo Project 3",version="1.14.10-gke.42"} 1
+gke_master_unsupported_versions_count{location="europe-west4",name="cluster4",project_id="demo-project-4",project_name="Demo Project 4",version="1.16.13-gke.1"} 10
+gke_master_unsupported_versions_count{location="europe-west4-a",name="cluster5",project_id="demo-project-5",project_name="Demo Project 5",version="1.15.12-gke.2"} 5
+```
 
 ## Instructions
 
