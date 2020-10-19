@@ -1,20 +1,24 @@
 name: Release
+
 on:
   push:
-    paths-ignore:
-      - .dependabot/**
-      - .github/**
-      - .yamllint
-      - '*.md'
+    paths:
+      - '**.go'
+      - go.mod
+      - go.sum
+      - Dockerfile
     branches:
       - master
     tags:
       - v*
+
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
 

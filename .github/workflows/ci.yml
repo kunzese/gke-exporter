@@ -1,15 +1,18 @@
 name: CI
+
 on:
   push:
-    branches-ignore:
+    branches:
       - master
-      - dependabot/**
   pull_request:
+
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Lint Markdown files
         uses: actionshub/markdownlint@1.2.2
@@ -21,10 +24,11 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Build image
-        run: |-
-          docker build -f Dockerfile .
+        run: docker build -f Dockerfile .
