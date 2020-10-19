@@ -112,7 +112,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: gke-exporter
-          image: kunzese/gke-exporter:1.0.1
+          image: kunzese/gke-exporter:1.0.2
           ports:
             - containerPort: 8080
               protocol: TCP
