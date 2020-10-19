@@ -32,13 +32,13 @@ func New() *Exporter {
 		Metrics: map[string]*prometheus.Desc{
 			"gkeMasterVersion": prometheus.NewDesc(
 				prometheus.BuildFQName("gke", "master", "version_count"),
-				"Number of GKE clusters, partitioned by the version or their master nodes.",
+				"Number of GKE clusters, partitioned by the version of their master node.",
 				[]string{"version"},
 				nil,
 			),
 			"gkeUnsupportedMasterVersion": prometheus.NewDesc(
 				prometheus.BuildFQName("gke", "master", "unsupported_versions_count"),
-				"",
+				"Number of GKE clusters with unsupported master versions, partitioned by the location, project and version of their master node.",
 				[]string{"version", "project_id", "project_name", "name", "location"},
 				nil,
 			),
