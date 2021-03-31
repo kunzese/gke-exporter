@@ -9,8 +9,6 @@ on:
       - Dockerfile
     branches:
       - master
-    tags:
-      - v*
 
 jobs:
   release:
@@ -32,33 +30,36 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Log into registry
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: |-
           DOCKERHUB_USERNAME=$(echo $GITHUB_REPOSITORY | awk -F"/" '{print $1}')
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u $DOCKERHUB_USERNAME --password-stdin
 
       - name: Build and push image
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: |-
           set -ex
 
           IMAGE_ID=$GITHUB_REPOSITORY
-          IMAGE_TAG=latest
-          VERSION=$GITHUB_SHA
-
-          # Strip "v" prefix from tag name
-          if [[ "$GITHUB_REF" == "refs/tags/v"* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-            IMAGE_TAG=$VERSION
-          fi
+          IMAGE_TAG=${{ steps.semantic.outputs.new_release_version }}
+          VERSION=${{ steps.semantic.outputs.new_release_version }}
 
           echo IMAGE_ID=$IMAGE_ID
           echo IMAGE_TAG=$IMAGE_TAG
           echo VERSION=$VERSION
 
           docker build \
+            --tag $IMAGE_ID:latest \
             --tag $IMAGE_ID:$IMAGE_TAG \
             --build-arg VERSION=$VERSION \
             -f Dockerfile \
             .
 
-          docker push $IMAGE_ID:$IMAGE_TAG
+          docker push --all-tags $IMAGE_ID
