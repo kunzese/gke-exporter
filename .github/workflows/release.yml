@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '**.go'
@@ -17,8 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.ref }}
 
       - name: Lint Markdown files
         uses: actionshub/markdownlint@2.0.2
