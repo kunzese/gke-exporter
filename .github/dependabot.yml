@@ -4,23 +4,11 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
-  commit-message:
-    prefix: build
-    include: scope
 - package-ecosystem: gomod
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
-  commit-message:
-    prefix: build
-    include: scope
 - package-ecosystem: docker
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
-  commit-message:
-    prefix: build
-    include: scope
