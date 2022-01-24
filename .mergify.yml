@@ -1,7 +1,14 @@
+queue_rules:
+  - name: lowprio
+    conditions:
+      - schedule=Mon-Fri 09:30-16:00[Europe/Paris]
+
 pull_request_rules:
   - name: automatic merge for Dependabot pull requests
     conditions:
-      - author~=^dependabot(|-preview)\[bot\]$
+      - author=dependabot[bot]
+      - "#commits=1"
     actions:
-      merge:
+      queue:
+        name: lowprio
         method: rebase
