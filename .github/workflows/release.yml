@@ -1,15 +1,8 @@
 name: Release
 
 on:
-  workflow_dispatch:
-  push:
-    paths:
-      - '**.go'
-      - go.mod
-      - go.sum
-      - Dockerfile
-    branches:
-      - master
+  release:
+    types: [published]
 
 jobs:
   release:
@@ -19,44 +12,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2.4.0
 
-      - name: Lint Markdown files
-        uses: actionshub/markdownlint@2.0.2
-
-      - name: Lint YAML files
-        uses: karancode/yamllint-github-action@v2.0.0
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
         with:
-          yamllint_comment: true
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log into registry
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |-
-          DOCKERHUB_USERNAME=$(echo $GITHUB_REPOSITORY | awk -F"/" '{print $1}')
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push image
-        if: steps.semantic.outputs.new_release_published == 'true'
         run: |-
           set -ex
 
           IMAGE_ID=$GITHUB_REPOSITORY
-          IMAGE_TAG=${{ steps.semantic.outputs.new_release_version }}
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
+          VERSION=$GITHUB_SHA
+
+          # Strip "v" prefix from tag name
+          if [[ "$GITHUB_REF" == "refs/tags/v"* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
 
           echo IMAGE_ID=$IMAGE_ID
-          echo IMAGE_TAG=$IMAGE_TAG
           echo VERSION=$VERSION
 
           docker build \
             --tag $IMAGE_ID:latest \
-            --tag $IMAGE_ID:$IMAGE_TAG \
+            --tag $IMAGE_ID:$VERSION \
             --build-arg VERSION=$VERSION \
             -f Dockerfile \
             .
