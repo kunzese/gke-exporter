@@ -1,5 +1,5 @@
 queue_rules:
-  - name: lowprio
+  - name: default
     conditions:
       - schedule=Mon-Fri 09:30-16:00[Europe/Paris]
 
@@ -10,5 +10,7 @@ pull_request_rules:
       - "#commits=1"
     actions:
       queue:
-        name: lowprio
+        name: default
         method: rebase
+        rebase_fallback: none
+        update_method: rebase
