@@ -1,0 +1,20 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: "Breaking changes :boom:"
+      labels:
+        - breaking-change
+    - title: "New features :sparkles:"
+      labels:
+        - enhancement
+    - title: "Bugfixes :bug:"
+      labels:
+        - bug
+    - title: "Dependency updates :arrow_up:"
+      labels:
+        - dependencies
+    - title: Other Changes
+      labels:
+        - "*"
